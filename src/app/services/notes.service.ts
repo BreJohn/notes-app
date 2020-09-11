@@ -17,8 +17,6 @@ export class NotesService {
   }
 
   getAllNotes() {
-    this._httpClient
-      .get("http://localhost:3000/api/notes")
-      .subscribe((notes) => console.log("ALL NOTES:", notes));
+    return this._httpClient.get("http://localhost:3000/api/notes");
   }
 }

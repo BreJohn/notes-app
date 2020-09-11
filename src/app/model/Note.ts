@@ -1,4 +1,4 @@
-interface Note {
+export interface Note {
   title: string;
   body: string;
   userName: string;
