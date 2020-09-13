@@ -14,6 +14,9 @@ import { MatToolbarModule } from "@angular/material/toolbar";
 import { MatTableModule } from "@angular/material/table";
 import { MatPaginatorModule } from "@angular/material/paginator";
 import { MatSortModule } from "@angular/material/sort";
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+
 
 @NgModule({
   imports: [
@@ -29,6 +32,10 @@ import { MatSortModule } from "@angular/material/sort";
     MatToolbarModule,
     MatPaginatorModule,
     MatSortModule,
+    MatDatepickerModule,
+    MatDatepickerModule,
+    MatButtonModule,
+    MatNativeDateModule, 
   ],
   exports: [
     MatButtonModule,
@@ -44,6 +51,8 @@ import { MatSortModule } from "@angular/material/sort";
     MatTableModule,
     MatPaginatorModule,
     MatSortModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
   ],
   providers: [],
 })

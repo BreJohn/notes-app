@@ -10,11 +10,13 @@ import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { MaterialModule } from "./material.module";
 import { NotesComponent } from "../components/notes/notes.component";
 import { CommonModule } from "@angular/common";
+import { FiltersComponent } from '../components/filters/filters.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
 
 @NgModule({
-  declarations: [AppComponent, NotesComponent],
+  declarations: [AppComponent, NotesComponent, FiltersComponent],
   imports: [
     BrowserModule,
     HttpClientModule,
@@ -23,6 +25,7 @@ const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
     NoopAnimationsModule,
     MaterialModule,
     CommonModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent],
