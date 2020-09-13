@@ -11,7 +11,7 @@ import { MaterialModule } from "./material.module";
 import { NotesComponent } from "../components/notes/notes.component";
 import { CommonModule } from "@angular/common";
 import { FiltersComponent } from '../components/filters/filters.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
 
@@ -25,7 +25,8 @@ const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
     NoopAnimationsModule,
     MaterialModule,
     CommonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent],

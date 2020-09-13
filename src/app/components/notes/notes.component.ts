@@ -28,7 +28,6 @@ export class NotesComponent {
   }
 
   initTableSettings() {
-    this.allNotes.paginator = this.paginator;
     this.sort.active = "date";
     this.sort.direction = "desc";
     this.allNotes.sort = this.sort;

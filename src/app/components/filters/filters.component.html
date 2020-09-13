@@ -2,33 +2,27 @@
     <div class="title">Filtered by</div>
     <mat-form-field>
         <mat-label>Title</mat-label>
-        <input matInput placeholder="Title" formControlName="Title" (keyup)="onInputKeyUp($event, 'title')" />
+        <input matInput placeholder="Title" formControlName="title" />
     </mat-form-field>
     <mat-form-field>
         <mat-label>Body</mat-label>
-        <input matInput placeholder="Body" formControlName="Body" (keyup)="onInputKeyUp($event, 'body')" />
+        <input matInput placeholder="Body" formControlName="body" />
     </mat-form-field>
     <mat-form-field>
         <mat-label>UserName</mat-label>
-        <input matInput placeholder="UserName" formControlName="UserName" (keyup)="onInputKeyUp($event, 'userName')" />
+        <input matInput placeholder="UserName" formControlName="userName" />
     </mat-form-field>
     <mat-form-field>
         <mat-label>From</mat-label>
-        <input matInput [matDatepicker]="fromPicker" formControlName="From" (dateInput)="onInputKeyUp($event, 'dateFrom')" (dateChange)="onInputKeyUp($event, 'dateFrom')" />
+        <input matInput [matDatepicker]="fromPicker" formControlName="from" />
         <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
         <mat-datepicker #fromPicker></mat-datepicker>
     </mat-form-field>
     <mat-form-field>
         <mat-label>To</mat-label>
-        <input matInput [matDatepicker]="toPicker" formControlName="To" (dateInput)="onInputKeyUp($event, 'dateTo')" (dateChange)="onInputKeyUp($event, 'dateTo')" />
+        <input matInput [matDatepicker]="toPicker" formControlName="to" />
         <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
         <mat-datepicker #toPicker></mat-datepicker>
     </mat-form-field>
-    <mat-form-field>
-        <mat-label>Last Hour</mat-label>
-        <input matInput [matDatepicker]="lastHour" formControlName="LastHour" (dateInput)="onInputKeyUp($event, 'lastHour')" (dateChange)="onInputKeyUp($event, 'lastHour')" />
-        <mat-datepicker-toggle matSuffix [for]="lastHour"></mat-datepicker-toggle>
-        <mat-datepicker #lastHour></mat-datepicker>
-    </mat-form-field>
-
+    <mat-checkbox ngDefaultControl formControlName="lastHour">Last Hour</mat-checkbox>
 </form>
