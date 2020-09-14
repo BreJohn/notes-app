@@ -12,11 +12,13 @@ import { NotesComponent } from "../components/notes/notes.component";
 import { CommonModule } from "@angular/common";
 import { FiltersComponent } from '../components/filters/filters.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HomeComponent } from '../components/home/home.component';
+import { NewNoteComponent } from '../components/new-note/new-note.component';
 
 const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
 
 @NgModule({
-  declarations: [AppComponent, NotesComponent, FiltersComponent],
+  declarations: [AppComponent, NotesComponent, FiltersComponent, HomeComponent, NewNoteComponent],
   imports: [
     BrowserModule,
     HttpClientModule,
@@ -28,6 +30,7 @@ const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
     ReactiveFormsModule,
     FormsModule
   ],
+  entryComponents: [NotesComponent, HomeComponent],
   providers: [],
   bootstrap: [AppComponent],
 })

@@ -1,0 +1,19 @@
+<div class="new-note">
+    <form [formGroup]="createNoteForm" #form>
+        <mat-form-field appearance="fill">
+            <mat-label>Title</mat-label>
+            <input matInput formControlName="title" maxlength="20">
+        </mat-form-field>
+        <br>
+        <mat-form-field appearance="fill">
+            <mat-label>Username</mat-label>
+            <input matInput formControlName="userName" maxlength="15">
+        </mat-form-field>
+        <br>
+        <mat-form-field appearance="fill">
+            <mat-label>Body</mat-label>
+            <textarea matInput formControlName="body" maxlength="150"></textarea>
+        </mat-form-field>
+        <button mat-raised-button [disabled]="!createNoteForm.valid" (click)="submitNote()">Create Note</button>
+    </form>
+</div>

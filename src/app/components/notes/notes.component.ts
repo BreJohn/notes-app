@@ -1,10 +1,8 @@
 import { Component, ViewChild } from "@angular/core";
-import { MatPaginator } from "@angular/material/paginator";
 import { MatSort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
-import { truncate } from 'fs';
 import { FilterProperties } from 'src/app/interfaces/filterProperties';
-import { Note } from "src/app/model/Note";
+import { INote } from "src/app/model/Note";
 import { NotesService } from "../../services/notes.service";
 
 @Component({
@@ -13,15 +11,15 @@ import { NotesService } from "../../services/notes.service";
   styleUrls: ["./notes.component.less"],
 })
 export class NotesComponent {
-  allNotes: MatTableDataSource<Note>;
+  allNotes: MatTableDataSource<INote>;
   noteHeaders: string[];
-  filterPredicate: (note: Note, filter: string) => boolean;
+  filterPredicate: (note: INote, filter: string) => boolean;
   @ViewChild(MatSort) sort: MatSort;
 
   constructor(private notesService: NotesService) {}
   ngOnInit() {
     this.notesService.getAllNotes().subscribe((result: any) => {
-      this.allNotes = new MatTableDataSource<Note>(result.notes);
+      this.allNotes = new MatTableDataSource<INote>(result.notes);
       this.noteHeaders = Object.keys(result.notes[0]);
       this.initTableSettings();
     });
@@ -35,7 +33,7 @@ export class NotesComponent {
   }
 
   applyFilterProperties(filterProperties: FilterProperties) {
-    this.filterPredicate = (data: Note, filter: string) => filterProperties.filterPredicate(data,filter); 
+    this.filterPredicate = (data: INote, filter: string) => filterProperties.filterPredicate(data,filter); 
     if (filterProperties.filter === null || filterProperties.filter === undefined) {
       return 
     }

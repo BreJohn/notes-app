@@ -1,5 +1,12 @@
 <mat-toolbar>
-  <span>Notes APP</span>
+    <span>Notes APP</span>
+    <span class="toolbar-links">
+      <span>
+        <a routerLink="/home" class="home-link"><mat-icon aria-hidden="false" aria-label="home icon">home</mat-icon></a>
+    </span>
+    <span>
+        <a routerLink="/new-note">New Note</a>
+    </span>
+    </span>
 </mat-toolbar>
-
-<notes></notes>
+<router-outlet></router-outlet>

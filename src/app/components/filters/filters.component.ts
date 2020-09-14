@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { MatTableDataSource } from "@angular/material/table";
-import { Note } from "src/app/model/Note";
+import { INote } from "src/app/model/Note";
 import * as moment from "moment";
 import { FilterProperties } from "src/app/interfaces/filterProperties";
 import { FormBuilder, FormGroup } from "@angular/forms";
@@ -12,7 +12,7 @@ import { distinctUntilChanged, filter } from 'rxjs/operators';
   styleUrls: ["./filters.component.less"],
 })
 export class FiltersComponent {
-  @Input() notes: MatTableDataSource<Note>;
+  @Input() notes: MatTableDataSource<INote>;
   @Output() onFilterChange = new EventEmitter<FilterProperties>();
   filterForm: FormGroup;
   filterProperties: FilterProperties;
@@ -57,7 +57,7 @@ export class FiltersComponent {
   }
 
   createFilterPredicate() {
-    const filterPredicate = (note: Note, filter: string) => {
+    const filterPredicate = (note: INote, filter: string) => {
       const filterObj = JSON.parse(filter);
       const result = Object.keys(filterObj).reduce(
         (prev, curr) => {
@@ -70,7 +70,7 @@ export class FiltersComponent {
     return filterPredicate;
   }
 
-  filterByKey(note: Note, key: string, filterObj: any) {
+  filterByKey(note: INote, key: string, filterObj: any) {
     const filterValue = this.filterForm.get(key).value;
     if (filterValue === "invalid date") {
       return true;
