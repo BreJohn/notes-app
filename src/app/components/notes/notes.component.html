@@ -1,5 +1,5 @@
-<div class="container">
-    <filters [notes]="allNotes" (onFilterChange)="applyFilter($event)"></filters>
+<div class="container notes">
+    <filters [notes]="allNotes" (onFilterChange)="applyFilterProperties($event)"></filters>
     <div class="title text-center">NOTES</div>
     <table mat-table matSort matSortActive="date" matSortDirection="desc" [dataSource]="allNotes">
         <ng-container matColumnDef="title">

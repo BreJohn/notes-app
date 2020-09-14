@@ -3,8 +3,8 @@ import { MatTableDataSource } from "@angular/material/table";
 import { Note } from "src/app/model/Note";
 import * as moment from "moment";
 import { FilterProperties } from "src/app/interfaces/filterProperties";
-import { FormBuilder, FormControl, FormGroup } from "@angular/forms";
-import { merge } from "rxjs";
+import { FormBuilder, FormGroup } from "@angular/forms";
+import { distinctUntilChanged, filter } from 'rxjs/operators';
 
 @Component({
   selector: "filters",
@@ -15,6 +15,7 @@ export class FiltersComponent {
   @Input() notes: MatTableDataSource<Note>;
   @Output() onFilterChange = new EventEmitter<FilterProperties>();
   filterForm: FormGroup;
+  filterProperties: FilterProperties;
   constructor(private fb: FormBuilder) {
     this.filterForm = this.fb.group({
       title: [null, null],
@@ -27,6 +28,8 @@ export class FiltersComponent {
   }
 
   ngOnInit() {
+    this.filterProperties=  {...this.filterProperties, filterPredicate: this.createFilterPredicate()};
+    this.onFilterChange.emit(this.filterProperties);
     this.setSubscriptions();
   }
 
@@ -34,10 +37,10 @@ export class FiltersComponent {
     this.filterForm.valueChanges.subscribe( _ => {
       this.filterChanged();
     });
-    this.filterForm.get('lastHour').valueChanges.subscribe(
+    this.filterForm.get('lastHour').valueChanges.pipe(distinctUntilChanged()).subscribe(
       (value) => {
         if(!value) {
-          this.filterForm.enable();
+          this.filterForm.enable({emitEvent: false});
           return;
         }
         this.filterForm.get('from').reset('', {emitEvent: false})
@@ -49,9 +52,8 @@ export class FiltersComponent {
   }
 
   filterChanged() {
-    const filterPredicate = this.createFilterPredicate();
-    const filter = this.createFilters();
-    this.onFilterChange.emit({ filter, filterPredicate });
+    this.filterProperties = {...this.filterProperties, filter: this.createFilters()}
+    this.onFilterChange.emit(this.filterProperties);
   }
 
   createFilterPredicate() {
@@ -70,12 +72,13 @@ export class FiltersComponent {
 
   filterByKey(note: Note, key: string, filterObj: any) {
     const filterValue = this.filterForm.get(key).value;
-
+    if (filterValue === "invalid date") {
+      return true;
+    }
     switch (key) {
+      
           case "from": {
-            if (filterValue === "invalid date") {
-              return true;
-            }
+
             if (!moment(note.date).isValid()) {
               return false;
             }
@@ -84,9 +87,7 @@ export class FiltersComponent {
             return moment(transformedFilter).isSameOrBefore(transformedInput);
           }
           case "to": {
-            if (filterValue === "invalid date") {
-              return true;
-            }
+
             if (!moment(note.date).isValid()) {
               return false;
             }
@@ -95,6 +96,9 @@ export class FiltersComponent {
             return moment(transformedFilter).isSameOrAfter(transformedInput);
           }
           case "lastHour": {
+            const lastHour = moment().subtract(60, 'm').format();
+            const transformedInput = moment(note.date).format();
+            return  moment(lastHour).isSameOrBefore(transformedInput);
           }
           default: {
             return note[key].toLowerCase().indexOf(filterValue) !== -1;
@@ -107,7 +111,8 @@ export class FiltersComponent {
       (key) => {
         return (
           this.filterForm.controls[key].value !== null && 
-          this.filterForm.controls[key].value !== '')
+          this.filterForm.controls[key].value !== '' &&
+          this.filterForm.controls[key].value !== false )
       }
     )
     let filterObj = {}
