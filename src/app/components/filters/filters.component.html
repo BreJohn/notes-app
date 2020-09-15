@@ -1,30 +1,38 @@
 <div class="filters">
-    <form class="filter-form" [formGroup]="filterForm">
-        <div class="title">Filtered by</div>
-        <mat-form-field>
-            <mat-label>Title</mat-label>
-            <input matInput placeholder="Title" formControlName="title" />
-        </mat-form-field>
-        <mat-form-field>
-            <mat-label>Body</mat-label>
-            <input matInput placeholder="Body" formControlName="body" />
-        </mat-form-field>
-        <mat-form-field>
-            <mat-label>UserName</mat-label>
-            <input matInput placeholder="UserName" formControlName="userName" />
-        </mat-form-field>
-        <mat-form-field>
-            <mat-label>From</mat-label>
-            <input matInput [matDatepicker]="fromPicker" formControlName="from" />
-            <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
-            <mat-datepicker #fromPicker></mat-datepicker>
-        </mat-form-field>
-        <mat-form-field>
-            <mat-label>To</mat-label>
-            <input matInput [matDatepicker]="toPicker" formControlName="to" />
-            <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
-            <mat-datepicker #toPicker></mat-datepicker>
-        </mat-form-field>
-        <mat-checkbox ngDefaultControl formControlName="lastHour">Last Hour</mat-checkbox>
-    </form>
+  <form class="filter-form" [formGroup]="filterForm">
+    <div class="title">Filtered by</div>
+    <mat-form-field>
+      <mat-label>Title</mat-label>
+      <input matInput placeholder="Title" formControlName="title" />
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Body</mat-label>
+      <input matInput placeholder="Body" formControlName="body" />
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>UserName</mat-label>
+      <input matInput placeholder="UserName" formControlName="userName" />
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>From</mat-label>
+      <input matInput [matDatepicker]="fromPicker" formControlName="from" />
+      <mat-datepicker-toggle
+        matSuffix
+        [for]="fromPicker"
+      ></mat-datepicker-toggle>
+      <mat-datepicker #fromPicker></mat-datepicker>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>To</mat-label>
+      <input matInput [matDatepicker]="toPicker" formControlName="to" />
+      <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
+      <mat-datepicker #toPicker></mat-datepicker>
+    </mat-form-field>
+    <mat-checkbox ngDefaultControl formControlName="lastHour"
+      >Last Hour</mat-checkbox
+    >
+    <mat-checkbox ngDefaultControl formControlName="noteType"
+      >System Notes</mat-checkbox
+    >
+  </form>
 </div>

@@ -1,10 +1,10 @@
 import { Component, ViewChild } from "@angular/core";
 import { MatSort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
-import { FilterProperties } from 'src/app/interfaces/filterProperties';
+import { FilterProperties } from "src/app/interfaces/filterProperties";
 import { INote } from "src/app/model/Note";
 import { NotesService } from "../../services/notes.service";
-
+import * as moment from "moment";
 @Component({
   selector: "notes",
   templateUrl: "./notes.component.html",
@@ -15,17 +15,43 @@ export class NotesComponent {
   noteHeaders: string[];
   filterPredicate: (note: INote, filter: string) => boolean;
   @ViewChild(MatSort) sort: MatSort;
+  firstTime = true;
+  filter: string;
+  filterProperties: FilterProperties;
 
   constructor(private notesService: NotesService) {}
   ngOnInit() {
     this.notesService.getAllNotes().subscribe((result: any) => {
       this.allNotes = new MatTableDataSource<INote>(result.notes);
-      this.noteHeaders = Object.keys(result.notes[0]);
-      this.initTableSettings();
+      this.applyFilterIfExist();
+
+      console.log(this.allNotes);
+      if (this.firstTime) {
+        console.log(result);
+        this.noteHeaders = Object.keys(result.notes[0]);
+        this.initTableSettings();
+        return;
+      }
+      this.firstTime = false;
+      console.log(result);
     });
   }
 
+  applyFilterIfExist() {
+    if (this.filterProperties.filter) {
+      this.allNotes.filterPredicate = this.filterProperties.filterPredicate;
+      this.allNotes.filter = this.filterProperties.filter;
+    }
+  }
   initTableSettings() {
+    this.allNotes.sortingDataAccessor = (item, property): string | number => {
+      switch (property) {
+        case "date":
+          return moment(item.date).format();
+        default:
+          return item[property];
+      }
+    };
     this.sort.active = "date";
     this.sort.direction = "desc";
     this.allNotes.sort = this.sort;
@@ -33,13 +59,14 @@ export class NotesComponent {
   }
 
   applyFilterProperties(filterProperties: FilterProperties) {
-    this.filterPredicate = (data: INote, filter: string) => filterProperties.filterPredicate(data,filter); 
-    if (filterProperties.filter === null || filterProperties.filter === undefined) {
-      return 
+    this.filterProperties = filterProperties;
+    this.filterPredicate = filterProperties.filterPredicate;
+    if (
+      filterProperties.filter === null ||
+      filterProperties.filter === undefined
+    ) {
+      return;
     }
     this.allNotes.filter = filterProperties.filter;
-    console.log(this.allNotes.filteredData); 
   }
-
-
 }
