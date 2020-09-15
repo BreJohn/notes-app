@@ -1,0 +1,17 @@
+<div class="container">
+  <div class="table-container">
+    <div class="title text-center">Connected Users</div>
+    <table mat-table [dataSource]="users" #table>
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef>Id</th>
+        <td mat-cell *matCellDef="let user">{{ user.id }}</td>
+      </ng-container>
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Name</th>
+        <td mat-cell *matCellDef="let user">{{ user.name }}</td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="userHeaders"></tr>
+      <tr mat-row *matRowDef="let row; columns: userHeaders"></tr>
+    </table>
+  </div>
+</div>

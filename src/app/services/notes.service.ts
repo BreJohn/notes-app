@@ -2,33 +2,33 @@ import { Injectable } from "@angular/core";
 import { Socket } from "ngx-socket-io";
 import { HttpClient } from "@angular/common/http";
 import { NoteRequest } from "../model/NoteRequest";
-import { merge } from "rxjs";
-import { filter, scan } from "rxjs/operators";
-import { FilterProperties } from "../interfaces/filterProperties";
+import { merge, Observable } from "rxjs";
+import { scan } from "rxjs/operators";
+import { INotesResponse } from "../model/Note";
 
 @Injectable({
   providedIn: "root",
 })
 export class NotesService {
-  $newNote = this.socket.fromEvent("new note");
-  endpoint = "http://localhost:3000/api/notes";
+  private $newNote = this.socket.fromEvent("new note");
+  private endpoint = "http://localhost:3000/api/notes";
   constructor(private socket: Socket, private _httpClient: HttpClient) {}
 
-  getNotes() {
-    this.$newNote.subscribe((note) => {
-      console.log(note);
-    });
+  public getFirstNotes(): Observable<INotesResponse> {
+    return this._httpClient.get<INotesResponse>(this.endpoint);
   }
 
-  getAllNotes() {
-    return merge(this._httpClient.get(this.endpoint), this.$newNote).pipe(
-      scan((prev: any, curr: any) => {
+  public getAllNotes(): Observable<INotesResponse> {
+    return merge(this.getFirstNotes(), this.$newNote).pipe(
+      scan((prev: INotesResponse, curr: INotesResponse) => {
         return { ...prev, notes: prev.notes.concat(curr.notes[0]) };
       })
     );
   }
 
-  newNote(request: NoteRequest) {
-    return this._httpClient.post(this.endpoint, request);
+  public newNote(request: NoteRequest): Observable<string> {
+    return this._httpClient.post(this.endpoint, request, {
+      responseType: "text",
+    });
   }
 }

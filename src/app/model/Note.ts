@@ -5,3 +5,6 @@ export interface INote {
   date: number;
 }
 
+export interface INotesResponse {
+  notes: INote[];
+}

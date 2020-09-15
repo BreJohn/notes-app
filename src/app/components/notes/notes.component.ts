@@ -4,6 +4,8 @@ import { MatTableDataSource } from "@angular/material/table";
 import { FilterProperties } from "src/app/interfaces/filterProperties";
 import { INote } from "src/app/model/Note";
 import { NotesService } from "../../services/notes.service";
+import { Subscription } from "rxjs";
+
 import * as moment from "moment";
 @Component({
   selector: "notes",
@@ -18,10 +20,11 @@ export class NotesComponent {
   firstTime = true;
   filter: string;
   filterProperties: FilterProperties;
+  subscription = new Subscription();
 
   constructor(private notesService: NotesService) {}
   ngOnInit() {
-    this.notesService.getAllNotes().subscribe((result: any) => {
+    this.subscription = this.notesService.getAllNotes().subscribe((result) => {
       this.allNotes = new MatTableDataSource<INote>(result.notes);
       this.applyFilterIfExist();
 
@@ -35,6 +38,10 @@ export class NotesComponent {
       this.firstTime = false;
       console.log(result);
     });
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
   applyFilterIfExist() {
