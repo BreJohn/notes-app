@@ -4,7 +4,8 @@ import { INote } from "src/app/model/Note";
 import * as moment from "moment";
 import { FilterProperties } from "src/app/interfaces/filterProperties";
 import { FormBuilder, FormGroup } from "@angular/forms";
-import { debounceTime, distinctUntilChanged } from "rxjs/operators";
+import { debounceTime, distinctUntilChanged, filter } from "rxjs/operators";
+import { FilteringOptions } from "src/app/enums/FilteringOptions";
 
 @Component({
   selector: "filters",
@@ -16,10 +17,12 @@ export class FiltersComponent {
   @Output() onFilterChange = new EventEmitter<FilterProperties>();
   filterForm: FormGroup;
   filterProperties: FilterProperties;
+  userNameOptions = FilteringOptions;
   constructor(private fb: FormBuilder) {
     this.filterForm = this.fb.group({
       title: [null, null],
       body: [null, null],
+      userNameOptions: [FilteringOptions._Contains, null],
       userName: [null, null],
       from: [null, null],
       to: [null, null],
@@ -38,23 +41,21 @@ export class FiltersComponent {
   }
 
   setSubscriptions() {
-    this.filterForm.valueChanges.pipe(debounceTime(300)).subscribe((value) => {
-      console.log("called with value ", value);
-      this.filterChanged();
-    });
-    this.filterForm
-      .get("lastHour")
-      .valueChanges.pipe(distinctUntilChanged())
+    this.filterForm.valueChanges
+      .pipe(debounceTime(300), distinctUntilChanged())
       .subscribe((value) => {
-        if (!value) {
-          this.filterForm.enable({ emitEvent: false });
-          return;
-        }
-        this.filterForm.get("from").reset("", { emitEvent: false });
-        this.filterForm.get("to").reset("", { emitEvent: false });
-        this.filterForm.get("from").disable({ emitEvent: false });
-        this.filterForm.get("to").disable({ emitEvent: false });
+        this.filterChanged();
       });
+    this.filterForm.get("lastHour").valueChanges.subscribe((value) => {
+      if (!value) {
+        this.filterForm.enable({ emitEvent: false });
+        return;
+      }
+      this.filterForm.get("from").reset("", { emitEvent: false });
+      this.filterForm.get("to").reset("", { emitEvent: false });
+      this.filterForm.get("from").disable({ emitEvent: false });
+      this.filterForm.get("to").disable({ emitEvent: false });
+    });
   }
 
   filterChanged() {
@@ -78,22 +79,14 @@ export class FiltersComponent {
 
   filterByKey(note: INote, key: string) {
     const filterValue = this.filterForm.get(key).value;
-    if (filterValue === "invalid date") {
-      return true;
-    }
+
     switch (key) {
       case "from": {
-        if (!moment(note.date).isValid()) {
-          return false;
-        }
         const transformedFilter = moment(filterValue).startOf("day").format();
         const transformedInput = moment(note.date).startOf("day").format();
         return moment(transformedFilter).isSameOrBefore(transformedInput);
       }
       case "to": {
-        if (!moment(note.date).isValid()) {
-          return false;
-        }
         const transformedFilter = moment(filterValue).startOf("day").format();
         const transformedInput = moment(note.date).startOf("day").format();
         return moment(transformedFilter).isSameOrAfter(transformedInput);
@@ -105,6 +98,24 @@ export class FiltersComponent {
       }
       case "noteType": {
         return note.userName === "system note";
+      }
+      case "userName":
+      case "userNameOptions": {
+        if (this.filterForm.get("userName").value) {
+          const userName = this.filterForm.get("userName").value.toLowerCase();
+          if (
+            this.filterForm.get("userNameOptions").value ===
+            FilteringOptions._Contains
+          )
+            return note?.userName.toLowerCase().indexOf(userName) !== -1;
+          else if (
+            this.filterForm.get("userNameOptions").value ===
+            FilteringOptions._ExactMatch
+          )
+            return note["userName"].toLowerCase() === userName;
+          return note["userName"].toLowerCase().startsWith(userName);
+        }
+        break;
       }
       default: {
         return note[key].toLowerCase().indexOf(filterValue) !== -1;

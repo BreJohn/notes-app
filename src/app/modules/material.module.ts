@@ -13,10 +13,8 @@ import { MatTableModule } from "@angular/material/table";
 import { MatPaginatorModule } from "@angular/material/paginator";
 import { MatSortModule } from "@angular/material/sort";
 import { MatDatepickerModule } from "@angular/material/datepicker";
+import { MatNativeDateModule, MAT_DATE_LOCALE } from "@angular/material/core";
 import { MatCheckboxModule } from "@angular/material/checkbox";
-import { MatMomentDateModule } from "@angular/material-moment-adapter";
-import { MAT_DATE_LOCALE } from "@angular/material/core";
-
 @NgModule({
   imports: [
     MatButtonModule,
@@ -32,7 +30,7 @@ import { MAT_DATE_LOCALE } from "@angular/material/core";
     MatDatepickerModule,
     MatDatepickerModule,
     MatButtonModule,
-    MatMomentDateModule,
+    MatNativeDateModule,
     MatCheckboxModule,
     MatIconModule,
   ],
@@ -49,7 +47,7 @@ import { MAT_DATE_LOCALE } from "@angular/material/core";
     MatPaginatorModule,
     MatSortModule,
     MatDatepickerModule,
-    MatMomentDateModule,
+    MatNativeDateModule,
     MatCheckboxModule,
     MatIconModule,
   ],

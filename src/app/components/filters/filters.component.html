@@ -9,10 +9,26 @@
       <mat-label>Body</mat-label>
       <input matInput placeholder="Body" formControlName="body" />
     </mat-form-field>
-    <mat-form-field>
-      <mat-label>UserName</mat-label>
-      <input matInput placeholder="UserName" formControlName="userName" />
-    </mat-form-field>
+    <div>
+      <mat-form-field>
+        <mat-label>UserName</mat-label>
+        <input matInput placeholder="UserName" formControlName="userName" />
+      </mat-form-field>
+      <mat-radio-group formControlName="userNameOptions">
+        <mat-radio-button
+          [value]="userNameOptions._Contains"
+          [checked]="true"
+          >{{ userNameOptions._Contains }}</mat-radio-button
+        >
+        <mat-radio-button [value]="userNameOptions._ExactMatch">{{
+          userNameOptions._ExactMatch
+        }}</mat-radio-button>
+        <mat-radio-button [value]="userNameOptions._StartsWith">{{
+          userNameOptions._StartsWith
+        }}</mat-radio-button>
+      </mat-radio-group>
+    </div>
+
     <mat-form-field>
       <mat-label>From</mat-label>
       <input matInput [matDatepicker]="fromPicker" formControlName="from" />
