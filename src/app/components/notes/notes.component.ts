@@ -24,20 +24,22 @@ export class NotesComponent {
 
   constructor(private notesService: NotesService) {}
   ngOnInit() {
-    merge(
-      this.notesService.getFirstNotes(),
-      this.notesService.getNewNote()
-    ).subscribe((res) => {
-      if (this.firstTime) {
-        this.firstTime = false;
-        this.allNotes = new MatTableDataSource(res.notes);
-        this.noteHeaders = Object.keys(res.notes[0]);
-        this.initTableSettings();
-        return;
-      }
-      this.allNotes.data = this.allNotes.data.concat(res.notes[0]);
-      this.applyFilterIfExist();
-    });
+    this.subscription.add(
+      merge(
+        this.notesService.getFirstNotes(),
+        this.notesService.getNewNote()
+      ).subscribe((res) => {
+        if (this.firstTime) {
+          this.firstTime = false;
+          this.allNotes = new MatTableDataSource(res.notes);
+          this.noteHeaders = Object.keys(res.notes[0]);
+          this.initTableSettings();
+          return;
+        }
+        this.allNotes.data = this.allNotes.data.concat(res.notes[0]);
+        this.applyFilterIfExist();
+      })
+    );
   }
 
   ngOnDestroy() {
