@@ -15,11 +15,9 @@
         <input matInput placeholder="UserName" formControlName="userName" />
       </mat-form-field>
       <mat-radio-group formControlName="userNameOptions">
-        <mat-radio-button
-          [value]="userNameOptions._Contains"
-          [checked]="true"
-          >{{ userNameOptions._Contains }}</mat-radio-button
-        >
+        <mat-radio-button [value]="userNameOptions._Contains">{{
+          userNameOptions._Contains
+        }}</mat-radio-button>
         <mat-radio-button [value]="userNameOptions._ExactMatch">{{
           userNameOptions._ExactMatch
         }}</mat-radio-button>
