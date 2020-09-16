@@ -12,9 +12,11 @@ import { MatToolbarModule } from "@angular/material/toolbar";
 import { MatTableModule } from "@angular/material/table";
 import { MatPaginatorModule } from "@angular/material/paginator";
 import { MatSortModule } from "@angular/material/sort";
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
-import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDatepickerModule } from "@angular/material/datepicker";
+import { MatCheckboxModule } from "@angular/material/checkbox";
+import { MatMomentDateModule } from "@angular/material-moment-adapter";
+import { MAT_DATE_LOCALE } from "@angular/material/core";
+
 @NgModule({
   imports: [
     MatButtonModule,
@@ -30,9 +32,9 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     MatDatepickerModule,
     MatDatepickerModule,
     MatButtonModule,
-    MatNativeDateModule, 
+    MatMomentDateModule,
     MatCheckboxModule,
-    MatIconModule
+    MatIconModule,
   ],
   exports: [
     MatButtonModule,
@@ -47,11 +49,11 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     MatPaginatorModule,
     MatSortModule,
     MatDatepickerModule,
-    MatNativeDateModule,
+    MatMomentDateModule,
     MatCheckboxModule,
-    MatIconModule
+    MatIconModule,
   ],
-  providers: [],
+  providers: [{ provide: MAT_DATE_LOCALE, useValue: "GR" }],
 })
 export class MaterialModule {
   constructor(public matIconRegistry: MatIconRegistry) {
