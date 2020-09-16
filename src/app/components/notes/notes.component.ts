@@ -4,9 +4,10 @@ import { MatTableDataSource } from "@angular/material/table";
 import { FilterProperties } from "src/app/interfaces/filterProperties";
 import { INote } from "src/app/model/Note";
 import { NotesService } from "../../services/notes.service";
-import { merge, Subscription } from "rxjs";
-
+import { merge, Observable, Subscription } from "rxjs";
 import * as moment from "moment";
+import { Store } from "@ngrx/store";
+
 @Component({
   selector: "notes",
   templateUrl: "./notes.component.html",
@@ -21,23 +22,29 @@ export class NotesComponent {
   filter: string;
   filterProperties: FilterProperties;
   subscription = new Subscription();
-
-  constructor(private notesService: NotesService) {}
+  notes: Observable<{ notes: INote[] }>;
+  constructor(
+    private notesService: NotesService,
+    private store: Store<{ notes: { notes: INote[] } }>
+  ) {}
   ngOnInit() {
-    merge(
-      this.notesService.getFirstNotes(),
-      this.notesService.getNewNote()
-    ).subscribe((res) => {
-      if (this.firstTime) {
-        this.firstTime = false;
-        this.allNotes = new MatTableDataSource(res.notes);
-        this.noteHeaders = Object.keys(res.notes[0]);
-        this.initTableSettings();
-        return;
-      }
-      this.allNotes.data = this.allNotes.data.concat(res.notes[0]);
-      this.applyFilterIfExist();
-    });
+    this.notes = this.store.select("notes");
+    this.subscription.add(
+      merge(
+        this.notesService.getFirstNotes(),
+        this.notesService.getNewNote()
+      ).subscribe((res) => {
+        if (this.firstTime) {
+          this.firstTime = false;
+          this.allNotes = new MatTableDataSource(res.notes);
+          this.noteHeaders = Object.keys(res.notes[0]);
+          this.initTableSettings();
+          return;
+        }
+        this.allNotes.data = this.allNotes.data.concat(res.notes[0]);
+        this.applyFilterIfExist();
+      })
+    );
   }
 
   ngOnDestroy() {

@@ -15,6 +15,8 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { HomeComponent } from "../components/home/home.component";
 import { NewNoteComponent } from "../components/new-note/new-note.component";
 import { UsersComponent } from "../components/users/users.component";
+import { StoreModule } from "@ngrx/store";
+import { notesReducer } from "../store/reducers/notes.reducer";
 
 const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
 
@@ -37,6 +39,7 @@ const config: SocketIoConfig = { url: "http://localhost:3000", options: {} };
     CommonModule,
     ReactiveFormsModule,
     FormsModule,
+    StoreModule.forRoot({ notes: notesReducer }),
   ],
   entryComponents: [NotesComponent, HomeComponent],
   providers: [],
