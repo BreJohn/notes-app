@@ -5,7 +5,6 @@ import * as moment from "moment";
 import { FilterProperties } from "src/app/interfaces/filterProperties";
 import { FormBuilder, FormGroup } from "@angular/forms";
 import { debounceTime, distinctUntilChanged } from "rxjs/operators";
-import { Subject } from "rxjs";
 
 @Component({
   selector: "filters",
