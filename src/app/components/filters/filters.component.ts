@@ -6,6 +6,7 @@ import { FilterProperties } from "src/app/interfaces/filterProperties";
 import { FormBuilder, FormGroup } from "@angular/forms";
 import { debounceTime, distinctUntilChanged, filter } from "rxjs/operators";
 import { FilteringOptions } from "src/app/enums/FilteringOptions";
+import { Subscription } from "rxjs";
 
 @Component({
   selector: "filters",
@@ -18,11 +19,12 @@ export class FiltersComponent {
   filterForm: FormGroup;
   filterProperties: FilterProperties;
   userNameOptions = FilteringOptions;
+  subscription = new Subscription();
   constructor(private fb: FormBuilder) {
     this.filterForm = this.fb.group({
       title: [null, null],
       body: [null, null],
-      userNameOptions: [FilteringOptions._Contains, null],
+      userNameOptions: [{ value: null, disabled: true }, null],
       userName: [null, null],
       from: [null, null],
       to: [null, null],
@@ -41,21 +43,67 @@ export class FiltersComponent {
   }
 
   setSubscriptions() {
-    this.filterForm.valueChanges
-      .pipe(debounceTime(300), distinctUntilChanged())
-      .subscribe((value) => {
-        this.filterChanged();
-      });
-    this.filterForm.get("lastHour").valueChanges.subscribe((value) => {
-      if (!value) {
-        this.filterForm.enable({ emitEvent: false });
-        return;
-      }
-      this.filterForm.get("from").reset("", { emitEvent: false });
-      this.filterForm.get("to").reset("", { emitEvent: false });
-      this.filterForm.get("from").disable({ emitEvent: false });
-      this.filterForm.get("to").disable({ emitEvent: false });
-    });
+    this.subscription.add(
+      this.filterForm.valueChanges
+        .pipe(debounceTime(300), distinctUntilChanged())
+        .subscribe((value) => {
+          this.filterChanged();
+        })
+    );
+
+    //Enable/Disable date only if last hour don't have/have value
+    this.subscription.add(
+      this.filterForm
+        .get("lastHour")
+        .valueChanges.pipe(distinctUntilChanged())
+        .subscribe((value) => {
+          if (!value) {
+            this.filterForm.enable({ emitEvent: false });
+            return;
+          }
+          this.filterForm.get("from").reset("", { emitEvent: false });
+          this.filterForm.get("to").reset("", { emitEvent: false });
+          this.filterForm.get("from").disable({ emitEvent: false });
+          this.filterForm.get("to").disable({ emitEvent: false });
+        })
+    );
+
+    //Enable/Disable filtering options for username only if has/doesn't have value
+    this.subscription.add(
+      this.filterForm
+        .get("userName")
+        .valueChanges.pipe(debounceTime(300), distinctUntilChanged())
+        .subscribe((value) => {
+          if (!value) {
+            this.filterForm
+              .get("userNameOptions")
+              .disable({ emitEvent: false });
+            this.filterForm
+              .get("userNameOptions")
+              .reset("", { emitEvent: false });
+            return;
+          }
+          this.filterForm
+            .get("userNameOptions")
+            .patchValue(FilteringOptions._Contains);
+          this.filterForm.get("userNameOptions").enable({ emitEvent: false });
+        })
+    );
+    this.subscription.add(
+      this.filterForm
+        .get("lastHour")
+        .valueChanges.pipe(distinctUntilChanged())
+        .subscribe((value) => {
+          if (!value) {
+            this.filterForm.enable({ emitEvent: false });
+            return;
+          }
+          this.filterForm.get("from").reset("", { emitEvent: false });
+          this.filterForm.get("to").reset("", { emitEvent: false });
+          this.filterForm.get("from").disable({ emitEvent: false });
+          this.filterForm.get("to").disable({ emitEvent: false });
+        })
+    );
   }
 
   filterChanged() {
@@ -138,5 +186,9 @@ export class FiltersComponent {
       filterObj = { ...filterObj, [filter]: this.filterForm.get(filter).value };
     });
     return JSON.stringify(filterObj);
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 }

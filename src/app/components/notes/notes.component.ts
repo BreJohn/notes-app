@@ -28,7 +28,6 @@ export class NotesComponent {
     private store: Store<{ notes: { notes: INote[] } }>
   ) {}
   ngOnInit() {
-    this.notes = this.store.select("notes");
     this.subscription.add(
       merge(
         this.notesService.getFirstNotes(),
@@ -45,6 +44,7 @@ export class NotesComponent {
         this.applyFilterIfExist();
       })
     );
+    this.notes = this.store.select("notes");
   }
 
   ngOnDestroy() {
