@@ -10,7 +10,9 @@ import { INotesResponse } from "../model/Note";
   providedIn: "root",
 })
 export class NotesService {
-  private $newNote = this.socket.fromEvent("new note");
+  private $newNote: Observable<INotesResponse> = this.socket.fromEvent(
+    "new note"
+  );
   private endpoint = "http://localhost:3000/api/notes";
   constructor(private socket: Socket, private _httpClient: HttpClient) {}
 
@@ -18,12 +20,8 @@ export class NotesService {
     return this._httpClient.get<INotesResponse>(this.endpoint);
   }
 
-  public getAllNotes(): Observable<INotesResponse> {
-    return merge(this.getFirstNotes(), this.$newNote).pipe(
-      scan((prev: INotesResponse, curr: INotesResponse) => {
-        return { ...prev, notes: prev.notes.concat(curr.notes[0]) };
-      })
-    );
+  public getNewNote(): Observable<INotesResponse> {
+    return this.$newNote;
   }
 
   public newNote(request: NoteRequest): Observable<string> {

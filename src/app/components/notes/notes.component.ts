@@ -4,7 +4,7 @@ import { MatTableDataSource } from "@angular/material/table";
 import { FilterProperties } from "src/app/interfaces/filterProperties";
 import { INote } from "src/app/model/Note";
 import { NotesService } from "../../services/notes.service";
-import { Subscription } from "rxjs";
+import { merge, Subscription } from "rxjs";
 
 import * as moment from "moment";
 @Component({
@@ -24,19 +24,19 @@ export class NotesComponent {
 
   constructor(private notesService: NotesService) {}
   ngOnInit() {
-    this.subscription = this.notesService.getAllNotes().subscribe((result) => {
-      this.allNotes = new MatTableDataSource<INote>(result.notes);
-      this.applyFilterIfExist();
-
-      console.log(this.allNotes);
+    merge(
+      this.notesService.getFirstNotes(),
+      this.notesService.getNewNote()
+    ).subscribe((res) => {
       if (this.firstTime) {
-        console.log(result);
-        this.noteHeaders = Object.keys(result.notes[0]);
+        this.firstTime = false;
+        this.allNotes = new MatTableDataSource(res.notes);
+        this.noteHeaders = Object.keys(res.notes[0]);
         this.initTableSettings();
         return;
       }
-      this.firstTime = false;
-      console.log(result);
+      this.allNotes.data = this.allNotes.data.concat(res.notes[0]);
+      this.applyFilterIfExist();
     });
   }
 
@@ -46,7 +46,6 @@ export class NotesComponent {
 
   applyFilterIfExist() {
     if (this.filterProperties.filter) {
-      this.allNotes.filterPredicate = this.filterProperties.filterPredicate;
       this.allNotes.filter = this.filterProperties.filter;
     }
   }
